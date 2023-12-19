@@ -2,7 +2,7 @@ import * as React from "react";
 
 type TimerProps = {
   raid: string;
-  region: string;
+  region?: string;
 };
 
 export default function Timer({ raid, region }: TimerProps) {
@@ -10,12 +10,13 @@ export default function Timer({ raid, region }: TimerProps) {
 
   const rightNow = Date.now();
   let nextReset = Date.parse("21 Dec 2023 10:00:00 EST");
-  console.log(rightNow > nextReset);
 
   // Once rightNow is equal or lower than nextReset, nextReset gains 72 hours
   if (rightNow >= nextReset) {
     nextReset = nextReset + 72 * 3600000;
   }
+
+  const nextDate = new Date(nextReset).toLocaleDateString();
 
   let totalSeconds = timeLeft && Math.floor(timeLeft / 1000);
 
@@ -28,21 +29,19 @@ export default function Timer({ raid, region }: TimerProps) {
   const minutesLeft = totalSeconds && Math.floor(totalSeconds / 60);
   totalSeconds = minutesLeft && Math.floor(totalSeconds! - minutesLeft * 60);
 
-  //   const seconds = timeLeft && Math.floor(timeLeft / 1000);
-  //   const minutes = seconds && Math.floor(seconds / 60);
-  //   const hours = minutes && Math.floor(minutes / 60);
-  //   const days = hours && Math.floor(hours / 24);
-
   setTimeout(() => {
     setTimeLeft(nextReset - rightNow);
   }, 1000);
 
   return (
-    <div className="text-stone-100 text-xl">
-      <h3>{region}</h3>
-      <span>{raid} next reset: </span>
+    <div className="flex flex-col gap-2 text-stone-100 text-xl border-2 border-rose-200 rounded p-2">
+      <h3 className="text-3xl text-rose-500">{region}</h3>
       <p>
-        Resets in {daysLeft}d {hoursLeft}h {minutesLeft}m {totalSeconds}s
+        {raid} next reset:{" "}
+        <span className="text-rose-300 text-xl">{nextDate}</span>
+      </p>
+      <p className="text-rose-200 text-xl">
+        {daysLeft}d {hoursLeft}h {minutesLeft}m {totalSeconds}s
       </p>
     </div>
   );
